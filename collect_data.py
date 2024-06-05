@@ -27,7 +27,7 @@ else:
     action_path = os.path.join(dataset_path, action)
     
 
-with HandLandmarker.create_from_options(options) as landmarker:
+with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
     # Start a webcam capture session:
     cap = cv2.VideoCapture(0)
     timestamp = frame_count =  0
@@ -54,7 +54,7 @@ with HandLandmarker.create_from_options(options) as landmarker:
         cv2.putText(frame, f"Countdown: {int(TIMER - dt + 1)}s", (10, 110), 
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
         
-        data, frame = process_frame(frame, landmarker, timestamp) 
+        data, frame = process_frame(frame, holistic) 
         if dt >= TIMER:
             start_time = current_time
             if data.max() > 0:

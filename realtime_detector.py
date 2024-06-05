@@ -68,9 +68,9 @@ def main():
     model, labels = load_signmodel() 
     output_text = ''
     timestamp = 0
-    TIME_PER_PREDICTION = 1
+    TIME_PER_PREDICTION = 2
     start_prediction_time = 0
-    with HandLandmarker.create_from_options(options) as landmarker:
+    with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
         while True:
 
             event, values = window.read(timeout=50)
@@ -85,7 +85,7 @@ def main():
                 sg.popup_error('Error reading from camera!')
                 break
                     
-            data, annotated_frame = process_frame(frame, landmarker, timestamp)    
+            data, frame = process_frame(frame, holistic)     
             
             current_predition_time = time.time()
             dt = current_predition_time - start_prediction_time
@@ -111,7 +111,7 @@ def main():
                 
                 
             # Display OpenCV camera feed
-            window['-IMAGE-'].update(data=cv2_to_bytes(annotated_frame))    
+            window['-IMAGE-'].update(data=cv2_to_bytes(frame))    
             
             
             fig_agg.draw()
