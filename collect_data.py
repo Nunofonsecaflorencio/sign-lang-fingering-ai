@@ -23,7 +23,8 @@ if choice == len(actions) + 1:
     action_path = os.path.join(dataset_path, action)
     os.makedirs(action_path)
 else:
-    action_path = os.path.join(dataset_path, actions[choice - 1])
+    action = actions[choice - 1]
+    action_path = os.path.join(dataset_path, action)
     
 
 with HandLandmarker.create_from_options(options) as landmarker:
@@ -56,12 +57,12 @@ with HandLandmarker.create_from_options(options) as landmarker:
         data, frame = process_frame(frame, landmarker, timestamp) 
         if dt >= TIMER:
             start_time = current_time
-            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
             if data.max() > 0:
                 frame_count += 1
                 np.save(os.path.join(dataset_path, action, str(uuid.uuid4())), data)
 
 
+        # frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
         # Display the frame with hand landmarks:
         cv2.imshow('Hand Landmarker', frame)
 
