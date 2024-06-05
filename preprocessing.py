@@ -3,8 +3,12 @@ from mediapipe import solutions
 from mediapipe.framework.formats import landmark_pb2
 import os
 import numpy as np
+import tensorflow as tf
+import json
+import warnings
+warnings.filterwarnings("ignore", message="SymbolDatabase.GetPrototype() is deprecated*", category=UserWarning)
 
-hand_model_path = os.path.join('handmodel', 'hand_landmarker.task')
+hand_model_path = os.path.join('models', 'hand_landmarker.task')
 
 BaseOptions = mp.tasks.BaseOptions
 HandLandmarker = mp.tasks.vision.HandLandmarker
@@ -14,10 +18,10 @@ VisionRunningMode = mp.tasks.vision.RunningMode
 # Create a hand landmarker instance with the video mode:
 options = HandLandmarkerOptions(
     base_options=BaseOptions(model_asset_path=hand_model_path),
-    num_hands=2,
-    min_hand_detection_confidence=0.3,
-    min_hand_presence_confidence=0.3,
-    min_tracking_confidence=0.3,
+    num_hands=1,
+    # min_hand_detection_confidence=0.3,
+    # min_hand_presence_confidence=0.5,
+    # min_tracking_confidence=0.3,
     running_mode=VisionRunningMode.VIDEO)
 
 MARGIN = 10  # pixels
@@ -25,6 +29,15 @@ FONT_SIZE = 1
 FONT_THICKNESS = 1
 HANDEDNESS_TEXT_COLOR = (88, 205, 54) # vibrant green
 
+DATASET_PATH = os.path.join('dataset')
+
+def load_signmodel(file_path=os.path.join('models', 'model.keras')):
+
+
+  # Load the labels from the JSON file  
+  with open('labels.json', 'r') as f:
+      actions = json.load(f)
+  return tf.keras.models.load_model(file_path), actions
 
 def process_frame(frame, landmarker, timestamp):
     mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
