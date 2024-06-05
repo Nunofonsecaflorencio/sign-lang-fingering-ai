@@ -41,10 +41,10 @@ def update_plot(ax, x, y):
 def main():
 
     # define the form layout
-    layout = [[sg.Stretch(), sg.Text('Sign Language Fingering Detection', justification='center', font='Helvetica 20'), sg.Stretch()],
+    layout = [[sg.Stretch(), sg.Text('Detecção de Alfabeto em Lingua de Sinais', justification='center', font='Helvetica 20'), sg.Stretch()],
               [sg.Image(filename='', key='-IMAGE-', expand_x=True), sg.Canvas(key='-CANVAS-')],
               [sg.Multiline(size=(None, 3), font='Helvetica 28 bold',  key='-PREDICTION-')],
-              [sg.Button('Limpar', size=(16, 2)), sg.Stretch(), sg.Button('Sair', button_color='red', size=(16, 2))]]
+              [sg.Button('Limpar', size=(16, 2)), sg.Stretch(), sg.Text('UEM-FENG Grupo 1'), sg.Stretch(), sg.Button('Sair', button_color='red', size=(16, 2))]]
 
     # create the form and show it without the plot
     window = sg.Window('Sign Language Fingering AI', 
