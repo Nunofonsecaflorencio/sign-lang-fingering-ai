@@ -94,6 +94,8 @@ def main():
                 
                 if data.max():
                     prediction = model.predict(np.array([data])).flatten()
+                    # [0.5, 0.2, 0.1, 0.2]
+                    # [a, b, c, d]
                     predicted_action = labels[prediction.argmax()].upper()
                     
                     top_actions_idx = get_top_k_indexes(prediction, 3)
