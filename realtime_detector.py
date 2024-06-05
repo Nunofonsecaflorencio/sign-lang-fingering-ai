@@ -68,12 +68,12 @@ def main():
     model, labels = load_signmodel() 
     output_text = ''
     timestamp = 0
-    start_time = 0
-    TIMER_FOR_SAME_LETTERS = 2 # sec
+    TIME_PER_PREDICTION = 1
+    start_prediction_time = 0
     with HandLandmarker.create_from_options(options) as landmarker:
         while True:
 
-            event, values = window.read(timeout=10)
+            event, values = window.read(timeout=50)
             if event in ('Sair', None):
                 exit()
             if event == 'Limpar':
@@ -86,24 +86,26 @@ def main():
                 break
                     
             data, annotated_frame = process_frame(frame, landmarker, timestamp)    
-            if data.max():
-                prediction = model.predict(np.array([data])).flatten()
-                predicted_action = labels[prediction.argmax()].upper()
+            
+            current_predition_time = time.time()
+            dt = current_predition_time - start_prediction_time
+            if dt > TIME_PER_PREDICTION:
+                start_prediction_time = current_predition_time
                 
-                top_actions_idx = get_top_k_indexes(prediction, 3)
-                top_actions = [labels[i].upper() for i in top_actions_idx]
-                confidence_values = [prediction[i] for i in top_actions_idx]
-                
-                if output_text and predicted_action != output_text[-1]:
-                    start_time = time.time()
+                if data.max():
+                    prediction = model.predict(np.array([data])).flatten()
+                    predicted_action = labels[prediction.argmax()].upper()
+                    
+                    top_actions_idx = get_top_k_indexes(prediction, 3)
+                    top_actions = [labels[i].upper() for i in top_actions_idx]
+                    confidence_values = [prediction[i] for i in top_actions_idx]
+                    
                     output_text += predicted_action
                     update_plot(ax, top_actions, confidence_values)
-                else:
-                    dt = time.time() - start_time
-                    if dt >= TIMER_FOR_SAME_LETTERS:
-                        start_time = time.time()
-                        output_text += predicted_action
-                        update_plot(ax, top_actions, confidence_values)
+                   
+                
+                elif output_text and output_text[-1] != ' ':
+                    output_text += ' '
 
                 window['-PREDICTION-'].update(output_text)
                 

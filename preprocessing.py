@@ -19,9 +19,9 @@ VisionRunningMode = mp.tasks.vision.RunningMode
 options = HandLandmarkerOptions(
     base_options=BaseOptions(model_asset_path=hand_model_path),
     num_hands=1,
-    # min_hand_detection_confidence=0.3,
-    # min_hand_presence_confidence=0.5,
-    # min_tracking_confidence=0.3,
+    min_hand_detection_confidence=0.3,
+    min_hand_presence_confidence=0.5,
+    min_tracking_confidence=0.3,
     running_mode=VisionRunningMode.VIDEO)
 
 MARGIN = 10  # pixels
